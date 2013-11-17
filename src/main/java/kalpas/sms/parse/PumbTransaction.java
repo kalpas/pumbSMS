@@ -6,7 +6,7 @@ public class PumbTransaction {
 
     public enum PumbTransactionType {
 
-        BLOCKED("ZABLOKOVANO"), DEBITED("SPYSANNIA"), CREDITED("NADHODZHENNIA");
+        BLOCKED("ZABLOKOVANO"), DEBITED("SPYSANNIA"), CREDITED("NADHODZHENNIA"), REJECTED("VIDMOVA");
 
         private String typeName;
 
@@ -30,9 +30,16 @@ public class PumbTransaction {
     public Date                date;
 
     public float               amount;
+    public String              currency;
 
     public float               remaining;
+    public String              remainingCurrency;
 
     public float               remainingAvailable;
+    public String              remainingAvailableCurrency;
+
+    public String              atm;
+
+    public String              reasonRejected;
 
 }
