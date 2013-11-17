@@ -2,11 +2,16 @@ package kalpas.sms.parse;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,6 +26,7 @@ public class SmsParserTest {
         PumbSmsParser parser = new PumbSmsParser();
         int parsed = 0;
         int overall = 0;
+        List<PumbTransaction> transactions = new ArrayList<PumbTransaction>();
 
         File fXmlFile = new File("sms-20131105131035.xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -40,7 +46,9 @@ public class SmsParserTest {
                     String body = eElement.getAttribute("body");
                     System.out.println("msg : " + body);
                     overall++;
-                    if(parser.parsePumbSms(body.toString())!=null){
+                    PumbTransaction transaction = parser.parsePumbSms(body.toString());
+                    if(transaction!=null){
+                        transactions.add(transaction);
                         parsed++;
                     } else {
                         System.err.println("not matched");
@@ -52,13 +60,25 @@ public class SmsParserTest {
             }
         }
         
-        System.err.format("overall :%d, parsed: %d (%.2f%%)", overall, parsed, parsed * 100. / overall);
+        System.err.format("overall :%d, parsed: %d (%.2f%%)%n", overall, parsed, parsed * 100. / overall);
+
+        Set<String> atms = new HashSet<String>();
+        for (PumbTransaction tx : transactions) {
+            if (StringUtils.isEmpty(tx.atm)) {
+                System.err.println(tx.originalMsg);
+            }
+            atms.add(tx.atm);
+        }
+
+        for (String atm : atms) {
+            System.out.println(atm);
+        }
 
     }
 
     @Test
     public void test2() {
-        System.out.println(PumbTransaction.PumbTransactionType.valueOf("SPYSANNIA"));
+        System.out.println(PumbTransaction.PumbTransactionType.forName("SPYSANNIA"));
     }
 
     @Test
@@ -90,6 +110,20 @@ public class SmsParserTest {
         PumbSmsParser parser = new PumbSmsParser();
         String body = "111 *8499 2013-11-05 11:16:35 SPYSANNIA 600.00 UAH ZDOROVIE NAUCH KHARKOV UA (DOSTUPNO 58.86 UAH) Z NYH VLASNYH  KOSHTIV 58.86 UAH";
         if (parser.parsePumbSms(body.toString()) != null) {
+        } else {
+            System.err.println(body);
+            throw new Exception();
+        }
+
+    }
+
+    @Test
+    public void test6() throws Exception {
+        PumbSmsParser parser = new PumbSmsParser();
+        String body = "RAKHUNOK 111 *8499 2013-09-10 05:11:21 ZABLOKOVANO 0.99 USD (U VALIUTI RAKHUNKU 8.08 UAH)    GOOGLE *MapMyFITNESS GOOGLE.COM/CH US (DOSTUPNO 90.52 UAH)";
+        PumbTransaction tx = parser.parsePumbSms(body.toString());
+        if (tx != null) {
+
         } else {
             System.err.println(body);
             throw new Exception();

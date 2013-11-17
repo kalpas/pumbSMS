@@ -31,6 +31,9 @@ public class PumbTransaction {
 
     public float               amount;
     public String              currency;
+    
+    public float               amountInAccountCurrency;
+    public String              accountCurrency;
 
     public float               remaining;
     public String              remainingCurrency;
@@ -41,5 +44,7 @@ public class PumbTransaction {
     public String              atm;
 
     public String              reasonRejected;
+    
+    public String              originalMsg;
 
 }
