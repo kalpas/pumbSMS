@@ -38,10 +38,6 @@ public class PumbSmsParser {
         Matcher m = p.matcher(msg);
         PumbTransaction pumbTransaction = null;
         if (m.matches()) {
-            for (int i = 0; i <= m.groupCount(); i++) {
-                System.out.println("group " + i + " " + m.group(i));
-            }
-
             pumbTransaction = new PumbTransaction();
             pumbTransaction.originalMsg = m.group();
             if (!StringUtils.isEmpty(m.group(6))) {
