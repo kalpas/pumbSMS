@@ -27,24 +27,26 @@ public class PumbTransaction {
 
     public PumbTransactionType transactionType;
 
+    public int                 card;
+
     public Date                date;
 
-    public float               amount;
+    public Double              amount;
     public String              currency;
-    
-    public float               amountInAccountCurrency;
+
+    public Double              amountInAccountCurrency;
     public String              accountCurrency;
 
-    public float               remaining;
+    public Double              remaining;
     public String              remainingCurrency;
 
-    public float               remainingAvailable;
+    public Double              remainingAvailable;
     public String              remainingAvailableCurrency;
 
-    public String              atm;
+    public String              recipient;
 
     public String              reasonRejected;
-    
+
     public String              originalMsg;
 
 }

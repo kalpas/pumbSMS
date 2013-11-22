@@ -13,7 +13,7 @@ public class PumbSmsParser {
     private Pattern p = Pattern
                               .compile("(RAKHUNOK\\s)?"
                                       + "111\\s"
-                                      + "(\\*\\d{4}\\s)?" //card number, group 2
+                                      + "\\*?(\\d{4})?\\s?" //card number, group 2
                                       + "([ 0-9:-]{19})\\s" //date, group 3
                                       + "(("
                                           + "([a-zA-Z]*)\\s"// type of transaction, group 6
@@ -38,24 +38,35 @@ public class PumbSmsParser {
         Matcher m = p.matcher(msg);
         PumbTransaction pumbTransaction = null;
         if (m.matches()) {
+
+            // for (int i = 0; i <= m.groupCount(); i++) {
+            // System.out.println("group " + i + " " + m.group(i));
+            // }
+
             pumbTransaction = new PumbTransaction();
             pumbTransaction.originalMsg = m.group();
+            
+            String card = m.group(2);
+            if (!StringUtils.isEmpty(card)) {
+            pumbTransaction.card = Integer.valueOf(card);
+            }
+            
             if (!StringUtils.isEmpty(m.group(6))) {
                 pumbTransaction.transactionType = PumbTransactionType.forName(m.group(6));
-                pumbTransaction.amount = Float.valueOf(m.group(7));
+                pumbTransaction.amount = Double.valueOf(m.group(7));
                 pumbTransaction.currency = m.group(8);
-                pumbTransaction.atm = m.group(13);
+                pumbTransaction.recipient = m.group(13);
 
                 if (!StringUtils.isEmpty(m.group(10))) {
-                    pumbTransaction.amountInAccountCurrency = Float.parseFloat(m.group(10));
+                    pumbTransaction.amountInAccountCurrency = Double.parseDouble(m.group(10));
                     pumbTransaction.accountCurrency = m.group(11);
                 }
 
-                pumbTransaction.remaining = Float.valueOf(m.group(15));
+                pumbTransaction.remaining = Double.valueOf(m.group(15));
                 pumbTransaction.remainingCurrency = m.group(16);
 
                 if (!StringUtils.isEmpty(m.group(15))) {
-                    pumbTransaction.remainingAvailable = Float.valueOf(m.group(15));
+                    pumbTransaction.remainingAvailable = Double.valueOf(m.group(15));
                     pumbTransaction.remainingAvailableCurrency = m.group(16);
                 }
 
@@ -63,9 +74,9 @@ public class PumbSmsParser {
                 pumbTransaction.transactionType = PumbTransactionType.forName(m.group(24));// transaction
                                                                                            // rejected
 
-                pumbTransaction.amount = Float.valueOf(m.group(21));
+                pumbTransaction.amount = Double.valueOf(m.group(21));
                 pumbTransaction.currency = m.group(22);
-                pumbTransaction.atm = m.group(23);
+                pumbTransaction.recipient = m.group(23);
                 pumbTransaction.reasonRejected = m.group(25);
 
             } else {

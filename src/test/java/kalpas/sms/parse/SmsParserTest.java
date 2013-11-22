@@ -64,10 +64,10 @@ public class SmsParserTest {
 
         Set<String> atms = new HashSet<String>();
         for (PumbTransaction tx : transactions) {
-            if (StringUtils.isEmpty(tx.atm)) {
+            if (StringUtils.isEmpty(tx.recipient)) {
                 System.err.println(tx.originalMsg);
             }
-            atms.add(tx.atm);
+            atms.add(tx.recipient);
         }
 
         for (String atm : atms) {
