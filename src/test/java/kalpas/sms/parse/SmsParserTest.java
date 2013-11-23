@@ -3,9 +3,8 @@ package kalpas.sms.parse;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,6 +17,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.google.common.collect.Multisets;
+import com.google.common.collect.SortedMultiset;
+import com.google.common.collect.TreeMultiset;
 
 public class SmsParserTest {
 
@@ -47,32 +50,41 @@ public class SmsParserTest {
                     System.out.println("msg : " + body);
                     overall++;
                     PumbTransaction transaction = parser.parsePumbSms(body.toString());
-                    if(transaction!=null){
+                    if (transaction != null) {
                         transactions.add(transaction);
                         parsed++;
                     } else {
                         System.err.println("not matched");
                     }
-                        
 
                 }
 
             }
         }
-        
+
         System.err.format("overall :%d, parsed: %d (%.2f%%)%n", overall, parsed, parsed * 100. / overall);
 
-        Set<String> atms = new HashSet<String>();
+        // Set<String> atms = new HashSet<String>();
+        SortedMultiset<String> atms = TreeMultiset.create();
         for (PumbTransaction tx : transactions) {
             if (StringUtils.isEmpty(tx.recipient)) {
                 System.err.println(tx.originalMsg);
+            } else {
+                atms.add(tx.recipient);
             }
-            atms.add(tx.recipient);
         }
 
-        for (String atm : atms) {
-            System.out.println(atm);
+        Iterator<String> iterator = Multisets.copyHighestCountFirst(atms).elementSet().iterator();
+        while (iterator.hasNext()) {
+            String element = iterator.next();
+            System.out.print(element);
+            System.out.println(" " + atms.count(element));
         }
+
+        //
+        // for (String atm : atms) {
+        // System.out.println(atm);
+        // }
 
     }
 
