@@ -39,9 +39,9 @@ public class PumbSmsParser {
         PumbTransaction pumbTransaction = null;
         if (m.matches()) {
 
-            for (int i = 0; i <= m.groupCount(); i++) {
-                System.out.println("group " + i + " " + m.group(i));
-            }
+            // for (int i = 0; i <= m.groupCount(); i++) {
+            // System.out.println("group " + i + " " + m.group(i));
+            // }
 
             pumbTransaction = new PumbTransaction();
             pumbTransaction.originalMsg = m.group();
