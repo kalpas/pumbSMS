@@ -39,9 +39,9 @@ public class PumbSmsParser {
         PumbTransaction pumbTransaction = null;
         if (m.matches()) {
 
-            // for (int i = 0; i <= m.groupCount(); i++) {
-            // System.out.println("group " + i + " " + m.group(i));
-            // }
+            for (int i = 0; i <= m.groupCount(); i++) {
+                System.out.println("group " + i + " " + m.group(i));
+            }
 
             pumbTransaction = new PumbTransaction();
             pumbTransaction.originalMsg = m.group();
@@ -65,9 +65,9 @@ public class PumbSmsParser {
                 pumbTransaction.remaining = Double.valueOf(m.group(15));
                 pumbTransaction.remainingCurrency = m.group(16);
 
-                if (!StringUtils.isEmpty(m.group(15))) {
-                    pumbTransaction.remainingAvailable = Double.valueOf(m.group(15));
-                    pumbTransaction.remainingAvailableCurrency = m.group(16);
+                if (!StringUtils.isEmpty(m.group(18))) {
+                    pumbTransaction.remainingAvailable = Double.valueOf(m.group(18));
+                    pumbTransaction.remainingAvailableCurrency = m.group(19);
                 }
 
             } else if (!StringUtils.isEmpty(m.group(21))) {

@@ -120,7 +120,7 @@ public class SmsParserTest {
     @Test
     public void test5() throws Exception {
         PumbSmsParser parser = new PumbSmsParser();
-        String body = "111 *8499 2013-11-05 11:16:35 SPYSANNIA 600.00 UAH ZDOROVIE NAUCH KHARKOV UA (DOSTUPNO 58.86 UAH) Z NYH VLASNYH  KOSHTIV 58.86 UAH";
+        String body = "111 *8499 2013-11-05 11:16:35 SPYSANNIA 600.00 UAH ZDOROVIE NAUCH KHARKOV UA (DOSTUPNO 58.86 UAH) Z NYH VLASNYH  KOSHTIV 158.86 UAH";
         if (parser.parsePumbSms(body.toString()) != null) {
         } else {
             System.err.println(body);
