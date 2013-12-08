@@ -6,6 +6,9 @@ import java.util.regex.Pattern;
 import kalpas.sms.parse.PumbTransaction.PumbTransactionType;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class PumbSmsParser {
 
@@ -34,6 +37,8 @@ public class PumbSmsParser {
 
     // @formatter:on
 
+    private final DateTimeFormatter df = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+
     public PumbTransaction parsePumbSms(String msg) {
         Matcher m = p.matcher(msg);
         PumbTransaction pumbTransaction = null;
@@ -51,8 +56,18 @@ public class PumbSmsParser {
             pumbTransaction.card = Integer.valueOf(card);
             }
             
+            String date = m.group(3);
+            if (!StringUtils.isEmpty(date)) {
+                DateTime dateTime = null;
+                try{
+                dateTime = df.parseDateTime("2013-09-20 15:19:26");
+                } catch (IllegalArgumentException e) {
+                }
+                pumbTransaction.date = dateTime;
+            }
+
             if (!StringUtils.isEmpty(m.group(6))) {
-                pumbTransaction.transactionType = PumbTransactionType.forName(m.group(6));
+                pumbTransaction.type = PumbTransactionType.forName(m.group(6));
                 pumbTransaction.amount = Double.valueOf(m.group(7));
                 pumbTransaction.currency = m.group(8);
                 pumbTransaction.recipient = m.group(13);
@@ -71,7 +86,7 @@ public class PumbSmsParser {
                 }
 
             } else if (!StringUtils.isEmpty(m.group(21))) {
-                pumbTransaction.transactionType = PumbTransactionType.forName(m.group(24));// transaction
+                pumbTransaction.type = PumbTransactionType.forName(m.group(24));// transaction
                                                                                            // rejected
 
                 pumbTransaction.amount = Double.valueOf(m.group(21));

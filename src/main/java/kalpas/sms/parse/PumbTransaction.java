@@ -1,6 +1,6 @@
 package kalpas.sms.parse;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 public class PumbTransaction {
 
@@ -25,11 +25,11 @@ public class PumbTransaction {
 
     }
 
-    public PumbTransactionType transactionType;
+    public PumbTransactionType type;
 
     public int                 card;
 
-    public Date                date;
+    public DateTime            date;
 
     public Double              amount;
     public String              currency;
