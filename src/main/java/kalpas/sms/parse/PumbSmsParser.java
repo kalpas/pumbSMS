@@ -37,7 +37,7 @@ public class PumbSmsParser {
 
     // @formatter:on
 
-    private final DateTimeFormatter df = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    public final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     public PumbTransaction parsePumbSms(String msg) {
         Matcher m = p.matcher(msg);
@@ -60,7 +60,7 @@ public class PumbSmsParser {
             if (!StringUtils.isEmpty(date)) {
                 DateTime dateTime = null;
                 try{
-                dateTime = df.parseDateTime("2013-09-20 15:19:26");
+                    dateTime = dateFormat.parseDateTime(date);
                 } catch (IllegalArgumentException e) {
                 }
                 pumbTransaction.date = dateTime;
