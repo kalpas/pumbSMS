@@ -51,8 +51,8 @@ public class PumbSmsParserEN extends AbstractPumbSmsParser implements PumbSmsPar
                 pumbTransaction.currency = m.group(9);
                 pumbTransaction.recipient = m.group(11);
 
-                pumbTransaction.remaining = Double.valueOf(m.group(13));
-                pumbTransaction.remainingCurrency = m.group(14);
+                pumbTransaction.remainingAvailable = Double.valueOf(m.group(13));
+                pumbTransaction.remainingAvailableCurrency = m.group(14);
 
             }
 
