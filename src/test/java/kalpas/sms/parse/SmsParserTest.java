@@ -10,6 +10,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import kalpas.sms.parse.PumbSmsParserFactory.SmsLocale;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -26,7 +28,7 @@ public class SmsParserTest {
 
     @Test
     public void test() throws ParserConfigurationException, SAXException, IOException {
-        PumbSmsParser parser = new PumbSmsParser();
+        PumbSmsParserUA parser = new PumbSmsParserUA();
         int parsed = 0;
         int overall = 0;
         List<PumbTransaction> transactions = new ArrayList<PumbTransaction>();
@@ -95,7 +97,7 @@ public class SmsParserTest {
 
     @Test
     public void test3() throws Exception {
-        PumbSmsParser parser = new PumbSmsParser();
+        PumbSmsParserUA parser = new PumbSmsParserUA();
         String body = "RAKHUNOK 111 2013-10-10 13:07:40 NADHODZHENNIA 12457.86 UAH DOSTUPNO 13722.63 UAH Z NYH VLASNYH KOSHTIV 13722.63 UAH";
         if (parser.parsePumbSms(body.toString()) != null) {
         } else {
@@ -107,7 +109,7 @@ public class SmsParserTest {
 
     @Test
     public void test4() throws Exception {
-        PumbSmsParser parser = new PumbSmsParser();
+        PumbSmsParserUA parser = new PumbSmsParserUA();
         String body = "RAKHUNOK 111 *8499 2013-08-05 12:53:43 (41.00 UAH PORTMONE.MOBILE Kyiv UA) VIDMOVA: Nedostatno koshtiv";
         if (parser.parsePumbSms(body.toString()) != null) {
         } else {
@@ -119,7 +121,7 @@ public class SmsParserTest {
 
     @Test
     public void test5() throws Exception {
-        PumbSmsParser parser = new PumbSmsParser();
+        PumbSmsParserUA parser = new PumbSmsParserUA();
         String body = "111 *8499 2013-11-05 11:16:35 SPYSANNIA 600.00 UAH ZDOROVIE NAUCH KHARKOV UA (DOSTUPNO 58.86 UAH) Z NYH VLASNYH  KOSHTIV 158.86 UAH";
         if (parser.parsePumbSms(body.toString()) != null) {
         } else {
@@ -131,7 +133,7 @@ public class SmsParserTest {
 
     @Test
     public void test6() throws Exception {
-        PumbSmsParser parser = new PumbSmsParser();
+        PumbSmsParserUA parser = new PumbSmsParserUA();
         String body = "RAKHUNOK 111 *8499 2013-09-10 05:11:21 ZABLOKOVANO 0.99 USD (U VALIUTI RAKHUNKU 8.08 UAH)    GOOGLE *MapMyFITNESS GOOGLE.COM/CH US (DOSTUPNO 90.52 UAH)";
         PumbTransaction tx = parser.parsePumbSms(body.toString());
         if (tx != null) {
@@ -141,6 +143,52 @@ public class SmsParserTest {
             throw new Exception();
         }
 
+    }
+
+    @Test
+    public void format() {
+        System.out.println(String.format("available: %.2f%n", 20.33333333));
+    }
+
+    @Test
+    public void test7() throws ParserConfigurationException, SAXException, IOException {
+        PumbSmsParser parser = PumbSmsParserFactory.getInstance(SmsLocale.EN);
+        int parsed = 0;
+        int overall = 0;
+        List<PumbTransaction> transactions = new ArrayList<PumbTransaction>();
+
+        File fXmlFile = new File("sms-20140105133350.xml");
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document doc = dBuilder.parse(fXmlFile);
+
+        NodeList nList = doc.getElementsByTagName("sms");
+
+        for (int i = 0; i < nList.getLength(); i++) {
+
+            Node nNode = nList.item(i);
+
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                Element eElement = (Element) nNode;
+                if ("PUMB".equals(eElement.getAttribute("address"))) {
+                    String body = eElement.getAttribute("body");
+                    System.out.println("msg : " + body);
+                    overall++;
+                    PumbTransaction transaction = parser.parsePumbSms(body.toString());
+                    if (transaction != null) {
+                        transactions.add(transaction);
+                        parsed++;
+                    } else {
+                        System.err.println("not matched");
+                    }
+
+                }
+
+            }
+        }
+
+        System.err.format("overall :%d, parsed: %d (%.2f%%)%n", overall, parsed, parsed * 100. / overall);
     }
 
 }
