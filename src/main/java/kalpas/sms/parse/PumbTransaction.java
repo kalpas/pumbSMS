@@ -30,9 +30,11 @@ public class PumbTransaction {
 
     }
 
+    public boolean             rolledBack = false;
+
     public PumbTransactionType type;
 
-    public int                 card;
+    public Integer             card;
 
     public DateTime            date;
 

@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import junit.framework.Assert;
 import kalpas.sms.parse.PumbSmsParserFactory.SmsLocale;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +34,7 @@ public class SmsParserTest {
         int overall = 0;
         List<PumbTransaction> transactions = new ArrayList<PumbTransaction>();
 
-        File fXmlFile = new File("sms-20131105131035.xml");
+        File fXmlFile = new File("sms-20140105153621.xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(fXmlFile);
@@ -51,12 +52,14 @@ public class SmsParserTest {
                     String body = eElement.getAttribute("body");
                     System.out.println("msg : " + body);
                     overall++;
-                    PumbTransaction transaction = parser.parsePumbSms(body.toString());
-                    if (transaction != null) {
-                        transactions.add(transaction);
+                    try {
+                        PumbTransaction transaction = parser.parsePumbSms(body.toString());
                         parsed++;
-                    } else {
-                        System.err.println("not matched");
+                        if (transaction != null) {
+                            transactions.add(transaction);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("not matched\n");
                     }
 
                 }
@@ -146,6 +149,30 @@ public class SmsParserTest {
     }
 
     @Test
+    public void test8() throws Exception {
+        PumbSmsParserUA parser = new PumbSmsParserUA();
+        String body = " 111 *8499 2013-12-19 15:51:54 OTMENA OPERATSII ZABLOKOVANO 45.00 UAH McDonald's 075 KHARKIV UA (DOSTUPNO 7109.67 UAH) Z NYH VLASNYH  KOSHTIV 6109.67 UAH";
+        System.out.println(body + "\n");
+        PumbTransaction tx = parser.parsePumbSms(body.toString());
+        if (tx != null) {
+
+        } else {
+            System.err.println(body);
+            throw new Exception();
+        }
+
+    }
+
+    @Test
+    public void test9() throws Exception {
+        PumbSmsParserUA parser = new PumbSmsParserUA();
+        String body = "Shanovnyj kliente, Vash rozrahunkovyj period 28.12-27.01. Rozrahovujtes' kartkoju PUMB na sumu 1500 grn ta bezkoshtovno korystujtes Paketom v nastupnomu misyaci";
+        System.out.println(body + "\n");
+        PumbTransaction tx = parser.parsePumbSms(body.toString());
+        Assert.assertNull(tx);
+    }
+
+    @Test
     public void format() {
         System.out.println(String.format("available: %.2f%n", 20.33333333));
     }
@@ -175,12 +202,16 @@ public class SmsParserTest {
                     String body = eElement.getAttribute("body");
                     System.out.println("msg : " + body);
                     overall++;
-                    PumbTransaction transaction = parser.parsePumbSms(body.toString());
+                    PumbTransaction transaction = null;
+                    try {
+                        transaction = parser.parsePumbSms(body.toString());
+                    } catch (IllegalArgumentException e) {
+                    }
                     if (transaction != null) {
                         transactions.add(transaction);
                         parsed++;
                     } else {
-                        System.err.println("not matched");
+                        System.out.println("\nnot matched");
                     }
 
                 }
