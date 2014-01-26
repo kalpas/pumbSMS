@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import kalpas.sms.parse.PumbTransaction.PumbTransactionType;
 
-import org.apache.commons.lang3.StringUtils;
+import com.google.common.base.Strings;
 
 public class PumbSmsParserEN extends AbstractPumbSmsParser implements PumbSmsParser {
 
@@ -41,11 +41,11 @@ public class PumbSmsParserEN extends AbstractPumbSmsParser implements PumbSmsPar
 
             pumbTransaction.date = fetchDate(m, 3);
 
-            if (!StringUtils.isEmpty(m.group(6))) {
+            if (!Strings.isNullOrEmpty(m.group(6))) {
                 pumbTransaction.rolledBack = true;
             }
 
-            if (!StringUtils.isEmpty(m.group(7))) {
+            if (!Strings.isNullOrEmpty(m.group(7))) {
                 pumbTransaction.type = PumbTransactionType.forName(m.group(7));
                 pumbTransaction.amount = Double.valueOf(m.group(8));
                 pumbTransaction.currency = m.group(9);

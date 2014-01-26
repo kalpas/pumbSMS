@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import kalpas.sms.parse.PumbTransaction.PumbTransactionType;
 
-import org.apache.commons.lang3.StringUtils;
+import com.google.common.base.Strings;
 
 public class PumbSmsParserUA extends AbstractPumbSmsParser implements PumbSmsParser {
 
@@ -50,17 +50,17 @@ public class PumbSmsParserUA extends AbstractPumbSmsParser implements PumbSmsPar
 
             pumbTransaction.date = fetchDate(m, 3);
 
-            if (!StringUtils.isEmpty(m.group(6))) {
+            if (!Strings.isNullOrEmpty(m.group(6))) {
                 pumbTransaction.rolledBack = true;
             }
 
-            if (!StringUtils.isEmpty(m.group(7))) {
+            if (!Strings.isNullOrEmpty(m.group(7))) {
                 pumbTransaction.type = PumbTransactionType.forName(m.group(7));
                 pumbTransaction.amount = Double.valueOf(m.group(8));
                 pumbTransaction.currency = m.group(9);
                 pumbTransaction.recipient = m.group(14);
 
-                if (!StringUtils.isEmpty(m.group(11))) {
+                if (!Strings.isNullOrEmpty(m.group(11))) {
                     pumbTransaction.amountInAccountCurrency = Double.parseDouble(m.group(11));
                     pumbTransaction.accountCurrency = m.group(12);
                 }
@@ -68,12 +68,12 @@ public class PumbSmsParserUA extends AbstractPumbSmsParser implements PumbSmsPar
                 pumbTransaction.remaining = Double.valueOf(m.group(16));
                 pumbTransaction.remainingCurrency = m.group(17);
 
-                if (!StringUtils.isEmpty(m.group(19))) {
+                if (!Strings.isNullOrEmpty(m.group(19))) {
                     pumbTransaction.remainingAvailable = Double.valueOf(m.group(19));
                     pumbTransaction.remainingAvailableCurrency = m.group(20);
                 }
 
-            } else if (!StringUtils.isEmpty(m.group(22))) {
+            } else if (!Strings.isNullOrEmpty(m.group(22))) {
                 pumbTransaction.type = PumbTransactionType.forName(m.group(25));// transaction
                                                                                 // rejected
 

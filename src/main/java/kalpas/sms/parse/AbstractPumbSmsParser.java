@@ -2,10 +2,11 @@ package kalpas.sms.parse;
 
 import java.util.regex.Matcher;
 
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import com.google.common.base.Strings;
 
 public abstract class AbstractPumbSmsParser {
 
@@ -13,7 +14,7 @@ public abstract class AbstractPumbSmsParser {
 
     protected Integer fetchCardNumber(Matcher m, int group) {
         String cardString = m.group(group);
-        if (!StringUtils.isEmpty(cardString)) {
+        if (!Strings.isNullOrEmpty(cardString)) {
             return Integer.valueOf(cardString);
         }
         return null;
@@ -21,7 +22,7 @@ public abstract class AbstractPumbSmsParser {
 
     protected DateTime fetchDate(Matcher m, int group) {
         String date = m.group(group);
-        if (!StringUtils.isEmpty(date)) {
+        if (!Strings.isNullOrEmpty(date)) {
             try {
                 return dateFormat.parseDateTime(date);
             } catch (IllegalArgumentException e) {

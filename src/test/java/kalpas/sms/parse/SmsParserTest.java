@@ -13,7 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Assert;
 import kalpas.sms.parse.PumbSmsParserFactory.SmsLocale;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,6 +20,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Multisets;
 import com.google.common.collect.SortedMultiset;
 import com.google.common.collect.TreeMultiset;
@@ -72,7 +72,7 @@ public class SmsParserTest {
         // Set<String> atms = new HashSet<String>();
         SortedMultiset<String> atms = TreeMultiset.create();
         for (PumbTransaction tx : transactions) {
-            if (StringUtils.isEmpty(tx.recipient)) {
+            if (Strings.isNullOrEmpty(tx.recipient)) {
                 System.err.println(tx.originalMsg);
             } else {
                 atms.add(tx.recipient);
